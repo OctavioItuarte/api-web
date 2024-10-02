@@ -32,7 +32,8 @@ server.on('listening', onListening);
 
 async function connectMongoDBAndStartServer() {
   try {
-    await mongoose.connect('mongodb://bitnami:bitnami1999@127.0.0.1:27017/test'); 
+    const args = process.argv.slice(2);
+    await mongoose.connect(args[0]); 
     console.log('Connected to MongoDB');
   } catch (err) {
     console.error('Failed to connect to MongoDB', err);
