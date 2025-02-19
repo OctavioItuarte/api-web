@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 Sign up
+  form(action="/signup", method="post")
+    section
+        label(for="firstName") First Name
+        input(id="firstName" name="firstName" type="text" required)
+    section
+        label(for="lastName") Last Name
+        input(id="lastName" name="lastName" type="text" required)
+    section
+        label(for="username") Username
+        input(id="username" name="username" type="text" required)
+    section
+        label(for="email") Email
+        input(id="email" name="email" type="email" required)
+    section
+        label(for="birthdate") Birthdate
+        input(id="birthdate" name="birthdate" type="date" required)
+    section
+        label(for="new-password") Password
+        input(id="new-password" name="password" type="password" required)
+    button(type="submit") Sign up
+
+
+

@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  .title-container
+    h1.text-center #{title}
+    img.unicen-logo(src="/images/unicenLogo.png", alt="Logo Unicen")
+
+  // Seccion con todos los negocios
+  if businesses && businesses.length
+    h2.text-left TODOS LOS NEGOCIOS
+    .business-container
+      each business in businesses
+        .business-card
+          if business.logo
+            img(src=business.logo, alt=business.name, class="business-logo")
+          h3= business.name
+          p Direccion: #{business.address.street} #{business.address.number}, #{business.address.city}
+          p Categoria: #{business.category}
+          p Email: #{business.email}
+          p Telefono: #{business.phoneNumber}
+
+
+  // Secciones organizadas por categoría
+  if categorizedBusinesses && Object.keys(categorizedBusinesses).length
+    each category in Object.keys(categorizedBusinesses)
+      - var categoryBusinesses = categorizedBusinesses[category]
+      if categoryBusinesses.length
+        h2.text-left #{category.toUpperCase()}
+        .business-container
+          each business in categoryBusinesses
+            .business-card
+              if business.logo
+                img(src=business.logo, alt=business.name, class="business-logo")
+              h3= business.name
+              if business.address
+                p Direccion: #{business.address.street} #{business.address.number}, #{business.address.city}
+              else
+                p Direccion: No disponible
+              p Categoria: #{category}
+              p Email: #{business.email || "No disponible"}
+              p Telefono: #{business.phoneNumber || "No disponible"}

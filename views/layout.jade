@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title #{title}
+    link(rel="stylesheet", href="/stylesheets/style.css")
+  body
+    nav.navbar
+      div.navbar-right
+        if user
+          div.logout-container
+            form(action="/logout" method="post")
+              button.logout-button Cerrar sesión
+    block content
