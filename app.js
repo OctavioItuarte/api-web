@@ -7,6 +7,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth'); //for authorization
+var logoutRouter = require('./routes/logout');
+
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
 
@@ -22,27 +24,40 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware para hacer "user" disponible en las vistas
-app.use(function(req, res, next) {
-  res.locals.user = req.user; // Esto permite usar `if user` en Jade
-  next();
-});
-
-app.use('/', indexRouter);
-app.use('/', authRouter);
-
 app.use(session({
   secret: 'keyboard cat', //Esta es la clave secreta para firmar las cookies
   resave: false, 
   saveUninitialized: false, 
   store: MongoStore.create({
-    mongoUrl: 'mongodb://bitnami:bitnami1999@127.0.0.1:27017/test',
-    ttl: 14 * 24 * 60 * 60 //Expiración de sesión en 14 días
+    mongoUrl: '',  //-------------------URI
+    collectionName: "sessions",
+    ttl: 10 * 60 //Expiraciï¿½n de sesiï¿½n en 10 minutos
   })
 }));
 
+app.use('/', authRouter);
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(passport.authenticate('session'));
+
+app.use(function(req, res, next) {
+  if (!req.user) {
+    return res.status(401).send("No se encontro una sesion.");
+  }
+  next();
+});
+
+app.use('/', indexRouter);
+
+app.use('/', logoutRouter);
+
+// Middleware para hacer "user" disponible en las vistas
+app.use(function(req, res, next) {
+  res.locals.user = req.user; // Esto permite usar `if user` en Jade
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

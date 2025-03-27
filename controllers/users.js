@@ -1,16 +1,17 @@
-var controller = {}
-var mongoose = require('mongoose');
 var User = require('../models/userModel');
 
-var usersCreate = async function (req, res) {
+var create = async function (req, res) {
   try {
     var newUser = await User.create({
       name: {
-        first: req.body.name.first,
-        last: req.body.name.last
+        firstName: req.body.name.firstName,
+        lastName: req.body.name.lastName
       },
       email: req.body.email,
-      birthdate: req.body.birthdate
+      birthdate: req.body.birthdate,
+      registration_date: new Date(),
+      hashed_password: req.body.hashed_password,
+      salt: req.body.salt,
     });
     res.status(201).json(newUser);
   } catch (err) {
@@ -20,7 +21,10 @@ var usersCreate = async function (req, res) {
 
 var usersReadAll = async function(req, res) {
   try {
-    var users = await User.find({});
+    var users = await User.find({}, {hashed_password: 0, salt: 0});
+    if (!users.length) {
+      return res.status(404).json({ message: "No se encontraron usuarios" });
+    }
     res.status(200).json(users);
   } catch (err) {
     res.status(400).json(err);
@@ -46,6 +50,8 @@ var usersUpdateOne = async function(req, res) {
   try {
     var userId = req.params.id;
     var updateData = req.body;
+    const blockedFields = ["_id", "hashed_password", "salt"];    //evita que intenten modificar los respectivos campos
+    blockedFields.forEach(field => delete updateData[field]);
     var updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
     if (!updatedUser) {
@@ -60,7 +66,7 @@ var usersUpdateOne = async function(req, res) {
 };
 
 
-module.exports = { usersCreate, usersReadAll, usersDeleteOne, usersUpdateOne };
+module.exports = { create, usersReadAll, usersDeleteOne, usersUpdateOne };
 
 
 
