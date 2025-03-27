@@ -33,7 +33,7 @@ var usersReadAll = async function(req, res) {
 
 var usersDeleteOne = async function(req, res) {
   try {
-    var userId = req.params._id;
+    var userId = req.params.id;
     console.log(userId);
     var result = await User.deleteOne({ _id: userId });
     if (result.deletedCount === 0) {
@@ -48,7 +48,7 @@ var usersDeleteOne = async function(req, res) {
 
 var usersUpdateOne = async function(req, res) {
   try {
-    var userId = req.params._id;
+    var userId = req.params.id;
     var updateData = req.body;
     const blockedFields = ["_id", "hashed_password", "salt"];    //evita que intenten modificar los respectivos campos
     blockedFields.forEach(field => delete updateData[field]);
