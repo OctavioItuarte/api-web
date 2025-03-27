@@ -1,89 +1,29 @@
 var express = require('express');
 var router = express.Router();
+
 var ctrlUsers = require('../controllers/users');
 var ctrlBusiness = require('../controllers/business');
-var Business = require('../models/businessModel');
+var ctrlProduct = require('../controllers/product');
 
+var checkRole = require('../utils/checkRole');
 
 //users
-router.post('/users', ctrlUsers.usersCreate);
-router.get('/users', ctrlUsers.usersReadAll);
-router.put('/users/:id', ctrlUsers.usersUpdateOne); 
-router.delete('/users/:id', ctrlUsers.usersDeleteOne); 
+router.post('/users', checkRole(["admin"]), ctrlUsers.create);
+router.get('/users', checkRole(["admin"]), ctrlUsers.usersReadAll);
+router.put('/users/:id', checkRole(["admin"]), ctrlUsers.usersUpdateOne);
+router.delete('/users/:id', checkRole(["admin"]), ctrlUsers.usersDeleteOne);
 
+//products
+router.post('/products', checkRole(["business"]), ctrlProduct.productCreate);
+router.get('/products/:idBusiness', checkRole(["admin", "business", "user"]), ctrlProduct.productsReadMany);
+router.put('/products/:id', checkRole(["business"]), ctrlProduct.productsUpdateOne); 
+router.delete('/products/:id', checkRole(["business"]), ctrlProduct.productsDeleteOne);
+router.delete('/products', checkRole(["business"]), ctrlProduct.productsDeleteMany);
 
 //business
-router.post('/business', ctrlBusiness.businessCreate);
-router.get('/business', ctrlBusiness.businessReadAll);
-router.put('/business/:id', ctrlBusiness.businessUpdateOne); 
-router.delete('/business/:id', ctrlBusiness.businessDeleteOne); 
-
-
-//router.get('/', function(req, res, next) {
-//  res.render('index', { title: 'Express' });
-//});
-
-//router.get('/', async function (req, res, next) {
-//  try {
-//    const businesses = await Business.find(); // Obtener negocios desde MongoDB
-//    res.render('index', { title: 'E-commerce', businesses }); // Pasar los datos a la vista
-//  } catch (err) {
-//    console.error("Error obteniendo negocios:", err);
-//    res.status(500).send("Error cargando la pÃ¡gina");
-//  }
-//});
-
-//router.get('/', async function (req, res, next) {
-//  try {
-//    const businesses = await Business.find().lean();
-//    const categorizedBusinesses = {};
-//
-//    businesses.forEach(business => {
-//      if (!business.category) return;
-//      if (!categorizedBusinesses[business.category]) {
-//        categorizedBusinesses[business.category] = [];
-//      }
-//      categorizedBusinesses[business.category].push(business);
-//    });
-//
-//    res.render('index', { 
-//      title: 'Too Good To Go - Unicen', 
-//      businesses: businesses || [], 
-//      categorizedBusinesses: categorizedBusinesses || {} 
-//    });
-//
-//  } catch (err) {
-//    console.error("Error obteniendo negocios:", err);
-//    res.status(500).send("Error cargando la página");
-//  }
-//});
-
-router.get('/', async function (req, res, next) {
-  try {
-    const businesses = await Business.find().lean();
-    const categorizedBusinesses = {};
-
-    businesses.forEach(business => {
-      if (!business || !business.category) return;
-      const category = business.category.trim(); // Elimina espacios extra
-
-      if (!categorizedBusinesses[category]) {
-        categorizedBusinesses[category] = [];
-      }
-      categorizedBusinesses[category].push(business);
-    });
-
-    res.render('index', { 
-      title: 'Too Good To Go - Unicen', 
-      businesses: businesses || [], 
-      categorizedBusinesses: categorizedBusinesses || {} 
-    });
-
-  } catch (err) {
-    console.error("Error obteniendo negocios:", err);
-    res.status(500).send("Error cargando la página");
-  }
-});
-
+router.post('/business', checkRole(["admin"]), ctrlBusiness.create);
+router.get('/business', checkRole(["admin", "business", "user"]), ctrlBusiness.businessReadAll);
+router.put('/business/:id', checkRole(["business"]), ctrlBusiness.businessUpdateOne); 
+router.delete('/business/:id', checkRole(["admin"]), ctrlBusiness.businessDeleteOne);
 
 module.exports = router;

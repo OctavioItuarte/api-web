@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+
   name: {
-    first: {
+    firstName: {
       type: String,
       required: true
     },
-    last: {
+    lastName: {
       type: String,
       required: true
     }
@@ -20,19 +21,19 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  username: {
-    type: String,
-    unique: true,
+  registration_date: {
+    type: Date,
     required: true
   },
   hashed_password: {
-    type: Buffer,     //Aquí se guarda en binario la contra
+    type: Buffer,     //Aquï¿½ se guarda en binario la contra
     required: true
   },
   salt: {
     type: Buffer,    //Esto se utiliza para la encriptacion
     required: true
-  }
+  },
+
 });
 
 module.exports = mongoose.model('User', userSchema);
