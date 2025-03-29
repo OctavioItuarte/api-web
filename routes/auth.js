@@ -10,6 +10,7 @@ var ctrlUsers = require('../controllers/users');
 var ctrlBusiness = require('../controllers/business');
 
 var ctrlAdmin = require('../controllers/admin');
+const { error } = require('console');
 
 var ctrl;
 
@@ -91,7 +92,7 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
       return cb(null, false, { message: 'Incorrect username or password.' });
     }
     
-    return cb(null, user);
+    return cb(null, {id:user._id, email:user.email, name:user.name, birthdate:user.birthdate, registration_date:user.registration_date, role:user.role});
   } catch (err) {
     return cb(err);
   }
@@ -115,9 +116,27 @@ router.get('/index', function(req, res) {
 });
 
 //Ruta para procesar el login
-router.post('/login/password', passport.authenticate('local', {
-  successRedirect: '/index',
-  failureRedirect: '/'
-}));
+router.post('/login/password', function(req, res, next){
+    passport.authenticate('local', function(err, user, info){
+        if(err){ next(err); }
+        else if (!user) {
+          return res.status(401).json({ message: 'Credenciales incorrectas' }); // No autorizado
+        }
+        req.logIn(user, function(err) {
+          if (err) { return res.status(500).json({ message: 'Error al iniciar sesión' }); }
+      
+          // Enviar cookie de sesión
+          /*
+          res.cookie('session_id', req.sessionID, {
+            httpOnly: true,
+            secure: false, // Cambia a true si usas HTTPS
+            sameSite: 'Lax'
+          });*/
+      
+          return res.status(200).json({ message: 'Inicio de sesión exitoso', user });
+        });
+    })(req, res, next)
+  }
+);
 
 module.exports = router;

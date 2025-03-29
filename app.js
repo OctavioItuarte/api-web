@@ -9,6 +9,8 @@ var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth'); //for authorization
 var logoutRouter = require('./routes/logout');
 
+const cors = require('cors'); 
+
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
 
@@ -18,6 +20,14 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(cors({
+  origin: 'http://localhost:4200', // <-- Permitir peticiones desde Angular
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // <-- Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // <-- Encabezados permitidos
+  credentials: true // <-- Permitir envío de cookies y credenciales
+}));
+
+app.options('*', cors()); // Permitir preflight requests en todas las rutas
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,15 +42,21 @@ app.use(session({
     mongoUrl: '',  //-------------------URI
     collectionName: "sessions",
     ttl: 10 * 60 //Expiraci�n de sesi�n en 10 minutos
-  })
+  }),
+  cookie: {
+    httpOnly: true,            // No permite que la cookie sea accesible desde JavaScript (más seguro)
+    secure: false,             // Si se usa HTTPS, cambia esto a true
+    maxAge: 3600000,           // Duración de la cookie en milisegundos (1 hora en este caso)
+    sameSite: 'Lax'
+  }
 }));
-
-app.use('/', authRouter);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(passport.authenticate('session'));
+app.use('/', authRouter);
+
+//app.use(passport.authenticate('session'));
 
 app.use(function(req, res, next) {
   if (!req.user) {
