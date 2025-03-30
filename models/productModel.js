@@ -24,6 +24,10 @@ const productSchema = new mongoose.Schema({
     image: {
       type: String,
       required: false
+    },
+    last_change:{
+      type: Date,
+      required: true
     }
 });
 

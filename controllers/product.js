@@ -33,6 +33,7 @@ var productsUpdateOne = async function(req, res){
     try{
         var productOwner = req.user.id;
         var updateData = req.body;
+        updateData.last_change = new Date();
         const blockedFields = ["_id", "_id_business"];    //evita que intenten modificar los respectivos campos
         blockedFields.forEach(field => delete updateData[field]);
         var updatedProduct = await Product.updateOne({_id:req.params.id, _id_business:productOwner}, {$set:req.body});
