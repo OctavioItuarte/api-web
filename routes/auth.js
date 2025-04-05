@@ -4,38 +4,28 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var crypto = require('crypto');
 var User = require('../models/userModel');
-var Business = require('../models/businessModel');
-var Admin = require('../models/adminModel');
-var ctrlUsers = require('../controllers/users');
-var ctrlBusiness = require('../controllers/business');
-
-var ctrlAdmin = require('../controllers/admin');
-const { error } = require('console');
+//var Admin = require('../models/adminModel');
+var ctrlUser = require('../controllers/users');
 
 var ctrl;
 
+router.get("/existsuser/:email", ctrlUser.existsUser);
+
 var existsUser = async function(req, res, next){
   console.log("Datos recibidos en /signup:", req.body); //Verifica qu� datos llegan
-
   try {
-    // ?? Verifica si el usuario ya existe
-    const existingUser = await User.findOne({ email: req.body.email });
-    const existingBusiness = await Business.findOne({ email: req.body.email });
-    const existingAdmin = await Admin.findOne({ email: req.body.email });
-    
-    if (existingUser || existingBusiness || existingAdmin) {
-      return res.status(400).send("Error: El correo ya est� registrado.");
+    var user = await User.find({email: req.body.email});
+    if (user.length > 0) {
+      return res.status(409).json({ message: "User already exists"});
     }
     next();
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
   }
-  catch (err) {
-    console.error("Error al verificar user:", err);
-    res.status(500).send("Error en el servidor");
-  }
-};
+}
 
 var createUser = async function (req, res, next) {
-  console.log("Datos recibidos en /signup:", req.body); //Verifica qu� datos llegan
   try {
     var salt = crypto.randomBytes(16);
     crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async function (err, hashedPassword) {
@@ -44,7 +34,7 @@ var createUser = async function (req, res, next) {
       try {
         req.body.salt = salt;
         req.body.hashed_password = hashedPassword;
-        const newUser = await ctrl.create(req, res);
+        const newUser = await ctrlUser.create(req, res);
         
         res.status(201).json(newUser);
 
@@ -60,30 +50,16 @@ var createUser = async function (req, res, next) {
   }
 };
 
-router.post('/signup/user', existsUser, (req, res, next) => {ctrl=ctrlUsers; createUser(req, res, next)});
-router.post('/signup/business', existsUser, (req, res, next) => {ctrl=ctrlBusiness; createUser(req, res, next)});
-
-//router.post('/signup/admin', (req, res, next) => {model=Admin; existsUser(req, res, next)}, (req, res, next) => {ctrl=ctrlAdmin; createUser(req, res, next)});
-
+router.post('/signup/client', (req, res, next) => {existsUser(req, res, next); req.body.role="client"}, createUser);
+router.post('/signup/business', (req, res, next) => {existsUser(req, res, next); req.body.role="business"}, createUser);
+//router.post('/signup/admin', (req, res, next) => {existsUser(req, res, next); req.body.role="admin"}, createUser);
 
 //Estrategia de autenticaci�n con username
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   try {
     var user = await User.findOne({ email:username }); // Buscar por username
-    const business = await Business.findOne({ email:username });
-    const admin = await Admin.findOne({ email:username });
 
-    if (user)
-      user.role = "user";
-    else if (business){
-      user=business;
-      user.role = "business";
-    }
-    else if (admin){
-      user=admin;
-      user.role = "admin";
-    }
-    else if (!user && !business && !admin) {
+    if (!user) {
       return cb(null, false, { message: 'Incorrect username or password.' });
     }
 
@@ -92,7 +68,7 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
       return cb(null, false, { message: 'Incorrect username or password.' });
     }
     
-    return cb(null, {id:user._id, email:user.email, name:user.name, birthdate:user.birthdate, registration_date:user.registration_date, role:user.role});
+    return cb(null, {id:user._id, email:user.email, role:user.role});
   } catch (err) {
     return cb(err);
   }

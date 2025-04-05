@@ -5,12 +5,16 @@ const userSchema = new mongoose.Schema({
   name: {
     firstName: {
       type: String,
-      required: true
+      required: false
     },
     lastName: {
       type: String,
-      required: true
+      required: false
     }
+  },
+  nameBusiness:{
+    type: String,
+    required: false
   },
   email: {
     type: String,
@@ -19,11 +23,23 @@ const userSchema = new mongoose.Schema({
   },
   birthdate: {
     type: Date,
-    required: true
+    required: false
   },
   registration_date: {
     type: Date,
     required: true
+  },
+  cuit: {
+    type: String,
+    required: false
+  },
+  address: {
+     type: String,
+     required: false
+  },
+  category: {
+    type: String,
+    required: false
   },
   hashed_password: {
     type: Buffer,     //Aqu� se guarda en binario la contra
@@ -32,6 +48,11 @@ const userSchema = new mongoose.Schema({
   salt: {
     type: Buffer,    //Esto se utiliza para la encriptacion
     required: true
+  },
+  role: {
+    type:String,
+    enum: ['client', 'business', 'admin'],
+    required:true
   },
 
 });
