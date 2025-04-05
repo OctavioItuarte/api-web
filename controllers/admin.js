@@ -7,6 +7,7 @@ var create = async function (req, res) {
       email: req.body.email,
       hashed_password: req.body.hashed_password,
       salt: req.body.salt,
+      role: 'admin',
     });
     res.status(201).json(newAdmin);
   } catch (err) {

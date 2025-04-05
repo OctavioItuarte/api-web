@@ -1,29 +1,23 @@
 var User = require('../models/userModel');
 
 var create = async function (req, res) {
+  console.log("Datos del body:", req.body);
   try {
-    var newUser = await User.create({
-      name: {
-        firstName: req.body.name.firstName,
-        lastName: req.body.name.lastName
-      },
-      email: req.body.email,
-      birthdate: req.body.birthdate,
+    var newBusiness = await User.create({
+      ...req.body,
       registration_date: new Date(),
-      hashed_password: req.body.hashed_password,
-      salt: req.body.salt,
     });
-    res.status(201).json(newUser);
+    res.status(201).json(newBusiness);
   } catch (err) {
     res.status(400).json(err);
   }
 };
 
-var usersReadAll = async function(req, res) {
+var readAllBusiness = async function(req, res) {
   try {
-    var users = await User.find({}, {hashed_password: 0, salt: 0});
+    var users = await User.find({role:'business'}, {hashed_password: 0, salt: 0});
     if (!users.length) {
-      return res.status(404).json({ message: "No se encontraron usuarios" });
+      return res.status(404).json({ message: "No se encontraron tiendas" });
     }
     res.status(200).json(users);
   } catch (err) {
@@ -31,7 +25,19 @@ var usersReadAll = async function(req, res) {
   }
 };
 
-var usersDeleteOne = async function(req, res) {
+var readAllClients = async function(req, res) {
+  try {
+    var users = await User.find({role:'client'}, {hashed_password: 0, salt: 0});
+    if (!users.length) {
+      return res.status(404).json({ message: "No se encontraron clientes" });
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+var deleteOne = async function(req, res) {
   try {
     var userId = req.params.id;
     console.log(userId);
@@ -46,7 +52,7 @@ var usersDeleteOne = async function(req, res) {
   }
 };
 
-var usersUpdateOne = async function(req, res) {
+var updateOne = async function(req, res) {
   try {
     var userId = req.params.id;
     var updateData = req.body;
@@ -65,8 +71,20 @@ var usersUpdateOne = async function(req, res) {
   }
 };
 
+var existsUser = async function(req, res){
+  console.log("Datos recibidos en /signup:", req.body); //Verifica qu� datos llegan
+  try {
+    var user = await User.find({email: req.params.email}, {hashed_password: 0, salt: 0});
+    if (user.length > 0) {
+      return res.status(409).json({ message: "No se encontro un usuario con email " + req.params.email});
+    }
+    res.status(200).json({ message: "Se encontro un usuario con email " + req.params.email});
+  } catch (err) {
+    res.status(400).json(err);
+  }
+}
 
-module.exports = { create, usersReadAll, usersDeleteOne, usersUpdateOne };
+module.exports = { create, readAllClients, readAllBusiness, deleteOne, updateOne, existsUser };
 
 
 

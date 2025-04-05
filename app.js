@@ -10,7 +10,7 @@ var authRouter = require('./routes/auth'); //for authorization
 var logoutRouter = require('./routes/logout');
 const sessionRouter = require('./routes/session');
 
-const cors = require('cors'); 
+const cors = require('cors');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
