@@ -8,6 +8,7 @@ var passport = require('passport');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth'); //for authorization
 var logoutRouter = require('./routes/logout');
+const sessionRouter = require('./routes/session');
 
 const cors = require('cors'); 
 
@@ -46,17 +47,21 @@ app.use(session({
   cookie: {
     httpOnly: true,            // No permite que la cookie sea accesible desde JavaScript (más seguro)
     secure: false,             // Si se usa HTTPS, cambia esto a true
-    maxAge: 3600000,           // Duración de la cookie en milisegundos (1 hora en este caso)
-    sameSite: 'Lax'
+    maxAge: 36000,           // Duración de la cookie en milisegundos (1 hora en este caso)
+    sameSite: 'Lax',
+    domain: 'localhost'
   }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', authRouter);
 
 //app.use(passport.authenticate('session'));
+
+app.use('/', authRouter);
+app.use('/session', sessionRouter); // permitir libremente consultar sesión
+
 
 app.use(function(req, res, next) {
   if (!req.user) {
@@ -66,8 +71,8 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', indexRouter);
-
 app.use('/', logoutRouter);
+
 
 // Middleware para hacer "user" disponible en las vistas
 app.use(function(req, res, next) {
