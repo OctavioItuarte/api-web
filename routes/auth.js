@@ -32,6 +32,7 @@ var createUser = async function (req, res, next) {
       if (err) { return next(err); }
 
       try {
+        delete req.body.password;
         req.body.salt = salt;
         req.body.hashed_password = hashedPassword;
         const newUser = await ctrlUser.create(req, res);

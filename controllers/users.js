@@ -3,11 +3,12 @@ var User = require('../models/userModel');
 var create = async function (req, res) {
   console.log("Datos del body:", req.body);
   try {
-    var newBusiness = await User.create({
+    var newUser = await User.create({
       ...req.body,
       registration_date: new Date(),
     });
-    res.status(201).json(newBusiness);
+    if(newUser)
+      res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json(err);
   }

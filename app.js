@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var mongoose = require('mongoose');
 var passport = require('passport');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth'); //for authorization
@@ -43,14 +42,7 @@ app.use(session({
     mongoUrl: '',  //-------------------URI
     collectionName: "sessions",
     ttl: 10 * 60 //Expiraci�n de sesi�n en 10 minutos
-  }),
-  cookie: {
-    httpOnly: true,            // No permite que la cookie sea accesible desde JavaScript (más seguro)
-    secure: false,             // Si se usa HTTPS, cambia esto a true
-    maxAge: 36000,           // Duración de la cookie en milisegundos (1 hora en este caso)
-    sameSite: 'Lax',
-    domain: 'localhost'
-  }
+  })
 }));
 
 app.use(passport.initialize());
