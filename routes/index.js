@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var upload = require('../utils/uploadImg')
+
 var ctrlUsers = require('../controllers/users');
 var ctrlProduct = require('../controllers/product');
 
@@ -16,7 +18,7 @@ router.delete('/users/:id', checkRole(["admin"]), ctrlUsers.deleteOne);
 router.get('/business', checkRole(["admin", "business", "client"]), ctrlUsers.readAllBusiness);
 
 //products
-router.post('/products', checkRole(["business"]), ctrlProduct.productCreate);
+router.post('/products', [checkRole(["business"]), upload.single('image')], ctrlProduct.productCreate);
 router.get('/products/:idBusiness', checkRole(["admin", "business", "client"]), ctrlProduct.productsReadMany);
 router.put('/products/:id', checkRole(["business"]), ctrlProduct.productsUpdateOne); 
 router.delete('/products/:id', checkRole(["business"]), ctrlProduct.productsDeleteOne);

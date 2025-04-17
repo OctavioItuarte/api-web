@@ -77,9 +77,9 @@ var existsUser = async function(req, res){
   try {
     var user = await User.find({email: req.params.email}, {hashed_password: 0, salt: 0});
     if (user.length > 0) {
-      return res.status(409).json({ message: "No se encontro un usuario con email " + req.params.email});
+      return res.status(409).json({ message: "User already exists"});
     }
-    res.status(200).json({ message: "Se encontro un usuario con email " + req.params.email});
+    res.status(200).send();
   } catch (err) {
     res.status(400).json(err);
   }

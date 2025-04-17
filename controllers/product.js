@@ -2,13 +2,13 @@ var Product = require('../models/productModel');
 
 var productCreate = async function(req, res){
     try{
+        if(req.file){
+            const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            req.body.image = imageUrl;
+        }
         var newProduct = await Product.create({
             _id_business: req.user.id,
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            stock: req.body.stock,
-            image: req.body.image,
+            ...req.body,
             last_change: new Date(),
         });
         res.status(201).json(newProduct);
@@ -21,7 +21,7 @@ var productsReadMany = async function(req, res){
     try{
         var products = await Product.find({_id_business:req.params.idBusiness});
         if (!products.length) {
-            return res.status(404).json({ message: "No se encontraron productos" });
+            return res.status(404).json({ message: "Products not found" });
         }
         res.status(200).json(products);
     } catch(err){
