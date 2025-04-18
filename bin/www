@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+require('dotenv').config();
+
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
@@ -32,7 +34,7 @@ server.on('listening', onListening);
 
 async function connectMongoDBAndStartServer() {
   try {
-    await mongoose.connect(''); //-------------URI
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB');
   } catch (err) {
     console.error('Failed to connect to MongoDB', err);

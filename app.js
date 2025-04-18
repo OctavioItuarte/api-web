@@ -36,11 +36,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(session({
-  secret: 'keyboard cat', //Esta es la clave secreta para firmar las cookies
+  secret: process.env.COOKIE_SECRET, //Esta es la clave secreta para firmar las cookies
   resave: false, 
   saveUninitialized: false, 
   store: MongoStore.create({
-    mongoUrl: '',  //-------------------URI
+    mongoUrl: process.env.MONGO_URI,
     collectionName: "sessions",
     ttl: 10 * 60 //Expiraci�n de sesi�n en 10 minutos
   })
