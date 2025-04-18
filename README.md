@@ -6,13 +6,12 @@ Para la persistencia de datos de usuarios, productos y sesiones se eligio **Mong
 
 ## Pre requisitos
 Contar con una base de datos MongoDB, cuya URL debe incluirse en los archivos *app.js* y *bin/www.js*.
-Como opciones, se utilizo una cuenta en MongoDBAtlas y un contenedor (docker) con una imagene de mongo.
 
 Tener instalado git y npm
 
 ## Guia de instalacion y ejecucion
 
-Primero ejecutar
+Para clonar el repositorio en tu maquina
 
     git clone https://github.com/OctavioItuarte/api-web.git
 
@@ -20,7 +19,7 @@ Para instalar las dependencias, desde consola navega dentro de la carpeta princi
 
     npm install
 
-Para iniciar el servidor ejecutar:
+Para iniciar el servidor ejecutar
 
     npm start
 
@@ -110,7 +109,7 @@ Estas son las principales dependencias utilizadas en el backend desarrollado con
 
 ---
 
-### ❓ Utilidades
+### 🧰 Utilidades
 
 | Método | Endpoint                 | Descripción                    |
 |--------|--------------------------|--------------------------------|
@@ -150,9 +149,10 @@ Para endpoints que suben imágenes (`POST /products`):
 
 ---
 
-## 🧑‍💻 Autor
+## 🧑‍💻 Autores
 
 **Octavio Ituarte** – [@OctavioItuarte](https://github.com/OctavioItuarte)
+
 **Julian Torrissi** – [@JulianTorrissi](https://github.com/JulianTorrissi)
 
 ---
