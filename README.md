@@ -19,6 +19,8 @@ Para instalar las dependencias, desde consola navega dentro de la carpeta princi
 
     npm install
 
+En el directorio raiz, crear un archivo '.env' y agregarle las variables de entorno PORT, MONGO_URI y COOKIE_SECRET
+
 Para iniciar el servidor ejecutar
 
     npm start
@@ -43,6 +45,7 @@ Estas son las principales dependencias utilizadas en el backend desarrollado con
 | **cookie-parser**  | ~1.4.4        | Parseo de cookies                                            |
 | **cors**           | ^2.8.5        | Middleware para habilitar CORS                               |
 | **morgan**         | ~1.9.1        | Logger de peticiones HTTP                                    |
+| **dotenv**         | ^16.5.0       | Cargar variables de entorno desde un archivo .env            |
 | **debug**          | ~2.6.9        | Herramienta para debuggeado con namespaces                   |
 | **jade**           | ^1.9.2        | Motor de vistas (opcional, si se usa para respuestas HTML)   |
 | **http-errors**    | ~1.6.3        | Generador de errores HTTP para manejo más limpio             |
