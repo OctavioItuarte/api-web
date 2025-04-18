@@ -1,6 +1,6 @@
-# Servidor Web para plataformas ecommerce
+# Servidor Web para plataforma e-commerce
 
-Se optó por desarrollar una aplicacion backend, construida con ExpressJS, para la comunicacion y persistencia de datos en la plataforma ecommerce.
+Se optó por desarrollar una aplicacion backend, construida con ExpressJS, para la comunicacion y persistencia de datos en la plataforma e-commerce.
 El proyecto brinda servicios de login, signup, chequeo de roles de usuario, almacenamiento de imagenes y operaciones CRUD sobre usuarios y productos.
 Para la persistencia de datos de usuarios, productos y sesiones se eligio **MongoDB**, cuyas estructuras de datos se definen utilizando **mongoose**.
 
@@ -90,7 +90,7 @@ Estas son las principales dependencias utilizadas en el backend desarrollado con
 | Método | Endpoint                      | Descripción                        |
 |--------|-------------------------------|------------------------------------|
 | POST   | `/products`                   | Crear un producto *(con imagen)*  |
-| GET    | `/products/:idBusiness`       | Obtener productos de un negocio (todos los usuarios tienen acceso)   |
+| GET    | `/products/:idBusiness`       | Obtener productos de un negocio (todos los roles) |
 | PUT    | `/products/:id`               | Actualizar un producto por ID     |
 | DELETE | `/products/:id`               | Eliminar producto por ID          |
 | DELETE | `/products`                   | Eliminar múltiples productos      |
@@ -145,6 +145,7 @@ Para endpoints que suben imágenes (`POST /products`):
 | 401    | No autorizado |
 | 403    | Acceso denegado por rol      |
 | 404    | No encontrado                 |
+| 409    | Conflicto con el estado actual del recurso |
 | 500    | Error interno del servidor   |
 
 ---
