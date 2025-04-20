@@ -88,7 +88,7 @@ Estas son las principales dependencias utilizadas en el backend desarrollado con
 
 ---
 
-### 🛒 Productos (solo business)
+### 🛒 Productos
 
 | Método | Endpoint                      | Descripción                        |
 |--------|-------------------------------|------------------------------------|

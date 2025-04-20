@@ -18,10 +18,10 @@ router.delete('/users/:id', checkRole(["admin"]), ctrlUsers.deleteOne);
 router.get('/business', checkRole(["admin", "business", "client"]), ctrlUsers.readAllBusiness);
 
 //products
-router.post('/products', [checkRole(["business"]), upload.single('image')], ctrlProduct.productCreate);
+router.post('/products', [checkRole(["admin", "business"]), upload.single('image')], ctrlProduct.productCreate);
 router.get('/products/:idBusiness', checkRole(["admin", "business", "client"]), ctrlProduct.productsReadMany);
-router.put('/products/:id', checkRole(["business"]), ctrlProduct.productsUpdateOne); 
-router.delete('/products/:id', checkRole(["business"]), ctrlProduct.productsDeleteOne);
+router.put('/products/:id', checkRole(["admin", "business"]), ctrlProduct.productsUpdateOne); 
+router.delete('/products/:id', checkRole(["admin", "business"]), ctrlProduct.productsDeleteOne);
 router.delete('/products', checkRole(["business"]), ctrlProduct.productsDeleteMany);
 
 module.exports = router;
