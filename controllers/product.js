@@ -1,4 +1,5 @@
 var Product = require('../models/productModel');
+const socket = require('../socket');
 
 var productCreate = async function(req, res){
     try{
@@ -73,4 +74,50 @@ var productsDeleteOne = async function(req, res){
       }
 };
 
-module.exports = { productCreate, productsReadMany, productsUpdateOne, productsDeleteMany, productsDeleteOne };
+
+var productCheckout = async function(req, res) {
+    const cart = req.body.cart;
+    if (!Array.isArray(cart)) 
+      return res.status(400).json({ message: 'Carrito inválido.' });
+  
+    const session = await Product.startSession();
+    session.startTransaction();
+  
+    try {
+      const updates = [];
+      for (const item of cart) {
+        const p = await Product.findById(item._id).session(session);
+        if (!p) throw new Error(`Producto no encontrado: ${item._id}`);
+        if (p.stock < item.quantity)
+          throw new Error(`No hay suficiente stock para ${p.name}`);
+        p.stock -= item.quantity;
+        await p.save({ session });
+        updates.push(p);
+      }
+  
+      await session.commitTransaction();
+      session.endSession();
+  
+      //Emitir con la instancia guardada en app
+      try {
+        const io = socket.getIO();
+        io.emit('stockUpdated', updates);
+      } catch (err) {
+        console.error('Socket emit fallo:', err);
+      }
+  
+      return res
+        .status(200)
+        .json({ message: 'Compra realizada con éxito', updatedProducts: updates });
+  
+    } catch (error) {
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+        session.endSession();
+      }
+      console.error('Error durante checkout:', error);
+      return res.status(409).json({ message: error.message });
+    }
+  };
+
+module.exports = { productCreate, productsReadMany, productsUpdateOne, productsDeleteMany, productsDeleteOne, productCheckout};

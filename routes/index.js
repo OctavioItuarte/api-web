@@ -23,5 +23,6 @@ router.get('/products/:idBusiness', checkRole(["admin", "business", "client"]), 
 router.put('/products/:id', checkRole(["business"]), ctrlProduct.productsUpdateOne); 
 router.delete('/products/:id', checkRole(["business"]), ctrlProduct.productsDeleteOne);
 router.delete('/products', checkRole(["business"]), ctrlProduct.productsDeleteMany);
+router.post('/productCheckout', checkRole(["client"]), ctrlProduct.productCheckout);
 
 module.exports = router;
