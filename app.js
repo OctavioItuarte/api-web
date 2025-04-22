@@ -8,11 +8,15 @@ var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth'); //for authorization
 var logoutRouter = require('./routes/logout');
 const sessionRouter = require('./routes/session');
+var mkdir = require('./utils/createdirectory');
 
 const cors = require('cors');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
+
+const directorio = path.join(__dirname, 'uploads');
+mkdir(directorio);
 
 var app = express();
 
