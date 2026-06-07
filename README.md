@@ -1,37 +1,22 @@
-# Servidor Web para plataforma e-commerce
-
-Se optó por desarrollar una aplicacion backend, construida con ExpressJS, para la comunicacion y persistencia de datos en la plataforma e-commerce.
+Desarrollo de API, construida con ExpressJS, para la comunicacion y persistencia de datos.
 El proyecto brinda servicios de login, signup, chequeo de roles de usuario, almacenamiento de imagenes y operaciones CRUD sobre usuarios y productos.
-Para la persistencia de datos de usuarios, productos y sesiones se eligio **MongoDB**, cuyas estructuras de datos se definen utilizando **mongoose**.
+La persistencia de datos de usuarios, productos y sesiones es **MongoDB** y **mongoose**.
 
 ## Pre requisitos
 Contar con una base de datos MongoDB, cuya URL debe incluirse en los archivos *app.js* y *bin/www.js*.
 
 Tener instalado git y npm
 
-## Guia de instalacion y ejecucion
-
 Para clonar el repositorio en tu maquina
 
     git clone https://github.com/OctavioItuarte/api-web.git
-
-Para instalar las dependencias, desde consola navega dentro de la carpeta principal y ejecuta
-
     npm install
-
 En el directorio raiz, crear un archivo '.env' y agregarle las variables de entorno PORT, MONGO_URI y COOKIE_SECRET
 
-Para iniciar el servidor ejecutar
-
     npm start
-
 Corre por defecto en el puerto 3000 o el definido en la variable de entorno "PORT".
 
----
-
-## 📦 Dependencias Backend
-
-Estas son las principales dependencias utilizadas en el backend desarrollado con **Express.js**:
+## Dependencias Backend
 
 | Paquete            | Versión       | Descripción                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
@@ -51,92 +36,46 @@ Estas son las principales dependencias utilizadas en el backend desarrollado con
 | **http-errors**    | ~1.6.3        | Generador de errores HTTP para manejo más limpio             |
 
 ---
-
-## 🔐 Autenticación
-
 > Algunas rutas requieren autorización mediante roles.  
 > Las sesiones se mantienen mediante **cookies** y se almacenan en MongoDB usando `connect-mongo`.
 
-### 🔄 Flujo de Autenticación
-
+---
 1. El usuario inicia sesión enviando sus credenciales (`email` y `password`) a `/login/password`.
 2. Si las credenciales son válidas, se genera una **cookie de sesión**.
 3. Las rutas protegidas validan esta sesión automáticamente en cada request.
 
----
-
-## 📦 Endpoints
-
----
-
-### 👥 Usuarios (solo admin)
+## Endpoints
 
 | Método | Endpoint       | Descripción              |
 |--------|----------------|--------------------------|
-| POST   | `/users`       | Crear un nuevo usuario   |
-| GET    | `/users`       | Obtener todos los clientes |
-| PUT    | `/users/:id`   | Actualizar usuario por ID |
-| DELETE | `/users/:id`   | Eliminar usuario por ID   |
-
----
-
-### 🏪 Negocios
-
-| Método | Endpoint       | Descripción                     |
-|--------|----------------|----------------------------------|
+| POST   | `/users`       | Crear un nuevo usuario (solo admin)  |
+| GET    | `/users`       | Obtener todos los clientes (solo admin)|
+| PUT    | `/users/:id`   | Actualizar usuario por ID (solo admin)|
+| DELETE | `/users/:id`   | Eliminar usuario por ID (solo admin)  |
 | GET    | `/business`    | Listar negocios disponibles (todos los roles) |
-
----
-
-### 🛒 Productos
-
-| Método | Endpoint                      | Descripción                        |
-|--------|-------------------------------|------------------------------------|
 | POST   | `/products`                   | Crear un producto *(con imagen)*  |
 | GET    | `/products/:idBusiness`       | Obtener productos de un negocio (todos los roles) |
 | PUT    | `/products/:id`               | Actualizar un producto por ID     |
 | DELETE | `/products/:id`               | Eliminar producto por ID          |
 | DELETE | `/products`                   | Eliminar múltiples productos      |
-
-> **Nota:** Envío de imagen se hace como `FormData` con campo `image`.
-
----
-
-### 🔐 Auth y Registro
-
-| Método | Endpoint             | Descripción                |
-|--------|----------------------|----------------------------|
 | POST   | `/login/password`    | Iniciar sesión con email y contraseña |
 | POST   | `/signup/client`     | Registro de usuario cliente |
 | POST   | `/signup/business`   | Registro de usuario negocio |
-
----
-
-### 🧰 Utilidades
-
-| Método | Endpoint                 | Descripción                    |
-|--------|--------------------------|--------------------------------|
 | GET    | `/existsuser/:email`     | Verifica si un usuario existe |
-
----
-
-### 🧾 Sesiones
 
 | Ruta base | `/session` |
 |-----------|-------------|
 | Verifica si hay una sesion activa |
 
----
+> **Nota:** Envío de imagen se hace como `FormData` con campo `image`.
 
-## 📁 Formato de imagen (Multer)
+## Formato de imagen (Multer)
 
 Para endpoints que suben imágenes (`POST /products`):
 
 - **Formato:** `multipart/form-data`
 - **Campo esperado:** `image`
 - **Respuesta:** URL accesible para usar en la app
-
----
 
 ## ⚠️ Códigos de Estado
 
@@ -150,14 +89,3 @@ Para endpoints que suben imágenes (`POST /products`):
 | 404    | No encontrado                 |
 | 409    | Conflicto con el estado actual del recurso |
 | 500    | Error interno del servidor   |
-
----
-
-## 🧑‍💻 Autores
-
-**Octavio Ituarte** – [@OctavioItuarte](https://github.com/OctavioItuarte)
-
-**Julian Torrissi** – [@JulianTorrissi](https://github.com/JulianTorrissi)
-
----
-
